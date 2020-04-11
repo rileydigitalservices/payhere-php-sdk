@@ -7,56 +7,64 @@ namespace Payhere;
  */
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    /** @var string original API base URL */
-    protected $origApiBase;
+    public  $_baseUrl;
 
-    /** @var string original API key */
-    protected $origApiKey;
 
-    /** @var string original client ID */
-    protected $origClientId;
+    //@var string target environment
+    public  $_targetEnvironment;
 
-    /** @var string original API version */
-    protected $origApiVersion;
 
-    /** @var string original account ID */
-    protected $origAccountId;
+    // @var string The Payhere Collections API Secret.
+    public  $_collectionApiSecret;
 
-    /** @var object HTTP client mocker */
-    protected $clientMock;
+    // @var string The Payhere collections primary Key
+    public  $_collectionPrimaryKey;
+
+    // @var string The Payhere collections User Id
+    public  $_collectionUserId ;
+
+
 
     protected function setUp()
     {
         // Save original values so that we can restore them after running tests
-        $this->origApiBase = Payhere::$apiBase;
-        $this->origApiKey = Payhere::getApiKey();
-        $this->origClientId = Payhere::getClientId();
-        $this->origApiVersion = Payhere::getApiVersion();
-        $this->origAccountId = Payhere::getAccountId();
+        $this->_baseUrl = Payhere::getBaseUrl();
 
-        // Set up host and credentials for Payhere-mock
-        Payhere::$apiBase = "localhost";
-        Payhere::setApiKey("sk_test_123");
-        Payhere::setClientId("ca_123");
-        Payhere::setApiVersion(null);
-        Payhere::setAccountId(null);
+        $this-> _targetEnvironment = Payhere::getTargetEnvironment();
+
+
+        $this->_currency = Payhere::getCurrency();
+
+
+        $this->_collectionApiSecret = Payhere::getCollectionApiSecret();
+
+        $this->_collectionPrimaryKey = Payhere::getCollectionPrimaryKey();
+
+        $this->_collectionUserId  = Payhere::getCollectionUserId();
+
 
         // Set up the HTTP client mocker
         $this->clientMock = $this->getMock('\Payhere\HttpClient\ClientInterface');
 
         // By default, use the real HTTP client
-        ApiRequest::setHttpClient(HttpClient\CurlClient::instance());
+        Request::setHttpClient(HttpClient\CurlClient::instance());
     }
 
     protected function tearDown()
     {
         // Restore original values
-        Payhere::$apiBase = $this->origApiBase;
-        Payhere::setEnableTelemetry(false);
-        Payhere::setApiKey($this->origApiKey);
-        Payhere::setClientId($this->origClientId);
-        Payhere::setApiVersion($this->origApiVersion);
-        Payhere::setAccountId($this->origAccountId);
+
+
+         Payhere::setBaseUrl($this->_baseUrl);
+
+         Payhere::setTargetEnvironment($this-> _targetEnvironment);
+
+        Payhere::setCollectionApiSecret( $this->_collectionApiSecret);
+
+         Payhere::setCollectionPrimaryKey($this->_collectionPrimaryKey);
+
+        Payhere::setCollectionUserId( $this->_collectionUserId );
+
     }
 
     /**
@@ -85,7 +93,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
             ->will($this->returnCallback(
                 function ($method, $absUrl, $headers, $params, $hasFile) {
                     $curlClient = HttpClient\CurlClient::instance();
-                    ApiRequest::setHttpClient($curlClient);
+                    Request::setHttpClient($curlClient);
                     return $curlClient->request($method, $absUrl, $headers, $params, $hasFile);
                 }
             ));
@@ -150,7 +158,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $hasFile = false,
         $base = null
     ) {
-        ApiRequest::setHttpClient($this->clientMock);
+        Request::setHttpClient($this->clientMock);
 
         if ($base === null) {
             $base = Payhere::$apiBase;

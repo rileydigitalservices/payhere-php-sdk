@@ -5,7 +5,7 @@ namespace Payhere;
 /**
  * Class Payhere
  *
- * @package payhere
+ * @package Payhere
  */
 class Payhere
 
@@ -34,6 +34,7 @@ class Payhere
 
     // @var string The Payhere collections User Id
     public static $collectionUserId ;
+
 
 
     // @var boolean Defaults to true.
@@ -65,7 +66,20 @@ class Payhere
      */
     public static function getBaseUrl()
     {
-        return self::$baseUrl || getenv("BASE_URL") || "http://api.payhere.africa" ;
+        $burl = getenv("BASE_URL");
+
+        if(isset(self::$baseUrl ))
+        {
+            return self::$baseUrl;
+        }
+
+        else if($burl)
+        {
+            return $burl;
+        }
+        else{
+            return "http://api.payhere.africa" ;
+        }
     }
 
 
@@ -79,12 +93,25 @@ class Payhere
         self::$baseUrl = $baseUrl;
     }
 
+
     /**
      * @return string The target environment.
      */
     public static function getTargetEnvironment()
     {
-        return self::$targetEnvironment || getenv("TARGET_ENVIRONMENT") || "sandbox" ;;
+
+        $targ=  getenv("TARGET_ENVIRONMENT");
+        if(isset(self::$targetEnvironment))
+        {
+            return self::$targetEnvironment;
+        }
+
+        if($targ)
+        {
+            return  $targ;
+        }
+
+        return "sandbox";
     }
 
 
@@ -105,7 +132,19 @@ class Payhere
      */
     public static function getCollectionApiSecret()
     {
-        return self::$collectionApiSecret || getenv("COLLECTION_API_SECRET");
+
+        $arg = getenv("COLLECTION_API_SECRET");
+
+        if(isset(self::$collectionApiSecret))
+        {
+            return self::$collectionApiSecret;
+        }
+
+        if($arg)
+        {
+            return $arg;
+        }
+
     }
 
 
@@ -125,7 +164,17 @@ class Payhere
      */
     public static function getCollectionPrimaryKey()
     {
-        return self::$collectionPrimaryKey || getenv("COLLECTION_PRIMARY_KEY");
+        $arg = getenv("COLLECTION_PRIMARY_KEY");
+
+        if(isset(self::$collectionPrimaryKey))
+        {
+            return self::$collectionPrimaryKey;
+        }
+
+        if($arg)
+        {
+            return $arg;
+        }
     }
 
 
@@ -147,7 +196,18 @@ class Payhere
      */
     public static function getCollectionUserId()
     {
-        return self::$collectionUserId || getenv("COLLECTION_USER_ID");
+
+        $arg = getenv("COLLECTION_USER_ID");;
+
+        if(isset(self::$collectionUserId ))
+        {
+            return self::$collectionUserId ;
+        }
+
+        if($arg)
+        {
+            return $arg;
+        }
     }
 
 

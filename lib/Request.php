@@ -9,12 +9,16 @@ namespace Payhere;
  */
 class Request
 {
-
     public  $_baseUrl;
 
 
     //@var string target environment
     public  $_targetEnvironment;
+
+
+    // @var string the currency of http calls
+    public  $_currency;
+
 
 
     // @var string The Payhere Collections API Secret.
@@ -35,14 +39,18 @@ class Request
 
 
     /**
-     * Request constructor.
+     * ApiRequest constructor.
      *
      * @param string|null $apiKey
      * @param string|null $apiBase
      */
-    public function __construct()
+    public function __construct($currency=null)
     {
 
+        if (!$currency) {
+            $$currency = Payhere::getCurrency();
+        }
+        $this->_currency = $currency;
     }
 
 
@@ -55,9 +63,6 @@ class Request
     {
         return Payhere::$baseUrl;
     }
-
-
-
 
 
     /**
@@ -348,8 +353,5 @@ class Request
         }
         return self::$_httpClient;
     }
-
-
-
 
 }

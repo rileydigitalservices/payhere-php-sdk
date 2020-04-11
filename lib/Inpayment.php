@@ -33,7 +33,7 @@ class Inpayment extends Request
 
 
 
-    // @var string The Payhere Inpayments API Secret.
+    // @var string The Payhere Collections API Secret.
     public  $_collectionApiSecret;
 
     // @var string The Payhere collections primary Key
@@ -58,7 +58,7 @@ class Inpayment extends Request
 
 
     /**
-     * Inpayment constructor.
+     * Collection constructor.
      *
      * @param string|null $apiKey
      * @param string|null $apiBase
@@ -85,19 +85,19 @@ class Inpayment extends Request
 
 
         if (!$collectionApiSecret) {
-            $collectionApiSecret = Payhere::getInpaymentApiSecret();
+            $collectionApiSecret = Payhere::getCollectionApiSecret();
         }
         $this->_collectionApiSecret = $collectionApiSecret;
 
 
         if (!$collectionPrimaryKey) {
-            $collectionPrimaryKey = Payhere::getInpaymentPrimaryKey();
+            $collectionPrimaryKey = Payhere::getCollectionPrimaryKey();
         }
         $this->_collectionPrimaryKey = $collectionPrimaryKey;
 
 
         if (!$collectionUserId) {
-            $collectionUserId = Payhere::getInpaymentUserId();
+            $collectionUserId = Payhere::getCollectionUserId();
         }
         $this->_collectionUserId = $collectionUserId;
     }
@@ -121,12 +121,12 @@ class Inpayment extends Request
 
 
         $encodedString = base64_encode(
-            Payhere::getInpaymentUserId() . ':' . Payhere::getInpaymentApiSecret()
+            Payhere::getCollectionUserId() . ':' . Payhere::getCollectionApiSecret()
         );
         $headers = [
             'Authorization' => 'Basic ' . $encodedString,
             'Content-Type' => 'application/json',
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey()
+            'Ocp-Apim-Subscription-Key' => Payhere::getCollectionPrimaryKey()
         ];
 
 
@@ -165,7 +165,7 @@ class Inpayment extends Request
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
             "X-Target-Environment" => $this->_targetEnvironment,
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey()
+            'Ocp-Apim-Subscription-Key' => Payhere::getCollectionPrimaryKey()
         ];
 
 

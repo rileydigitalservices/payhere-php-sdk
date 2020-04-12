@@ -23,9 +23,10 @@ before_install:
   # Install various build dependencies. We use `travis_retry` because Composer
   # will occasionally fail intermittently.
   - chmod +x build.php
+  - chmod +x build.php
   - travis_retry composer install
 
 
-script: ./build.php
+script: ./build.php ${AUTOLOAD}
 
 after_script: ./vendor/bin/coveralls -v

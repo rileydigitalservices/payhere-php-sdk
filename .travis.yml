@@ -22,6 +22,7 @@ env:
 before_install:
   # Install various build dependencies. We use `travis_retry` because Composer
   # will occasionally fail intermittently.
+  - chmod +x build.php
   - travis_retry composer install
 
 

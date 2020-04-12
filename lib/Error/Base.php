@@ -18,14 +18,14 @@ abstract class Base extends Exception
         $this->httpBody = $httpBody;
         $this->jsonBody = $jsonBody;
         $this->httpHeaders = $httpHeaders;
-        $this->appId = null;
+        $this->requestId = null;
 
         // TODO: make this a proper constructor argument in the next major
         //       release.
         $this->stripeCode = isset($jsonBody["error"]["code"]) ? $jsonBody["error"]["code"] : null;
 
-        if ($httpHeaders && isset($httpHeaders['APP-ID'])) {
-            $this->appId = $httpHeaders['APP-ID'];
+        if ($httpHeaders && isset($httpHeaders['Request-Id'])) {
+            $this->requestId = $httpHeaders['Request-Id'];
         }
     }
 
@@ -56,12 +56,12 @@ abstract class Base extends Exception
 
     public function getRequestId()
     {
-        return $this->appId;
+        return $this->requestId;
     }
 
     public function __toString()
     {
-        $id = $this->appId ? " from API request '{$this->appId}'": "";
+        $id = $this->requestId ? " from API request '{$this->requestId}'" : "";
         $message = explode("\n", parent::__toString());
         $message[0] .= $id;
         return implode("\n", $message);

@@ -4,47 +4,45 @@ namespace Payhere;
 
 use Payhere\HttpClient\CurlClient;
 
-class InpaymentsTest extends TestCase
+class OutpaymentTest
 {
-
     public function testHttpClientInjection()
     {
-        $reflector = new \ReflectionClass('Payhere\\Inpayments');
+        $reflector = new \ReflectionClass('Payhere\\Outpayment');
         $method = $reflector->getMethod('httpClient');
         $method->setAccessible(true);
 
         $curl = new CurlClient();
         $curl->setTimeout(10);
-        Inpayments::setHttpClient($curl);
+        Outpayment::setHttpClient($curl);
 
-        $injectedCurl = $method->invoke(new Inpayments());
+        $injectedCurl = $method->invoke(new Outpayment());
         $this->assertSame($injectedCurl, $curl);
     }
 
 
     public function testGetToken()
     {
-        $coll = new Inpayments();
+        $disb = new Outpayment();
 
-        $token = $coll->getToken();
+        $token = $disb->getToken();
 
         $this->assertFalse(is_null($token->getToken()));
     }
 
     public function testGetBalance()
     {
+        $disb = new Outpayment();
 
-        $coll = new Inpayments();
-
-        $bal = $coll->getBalance();
+        $bal = $disb->getBalance();
 
         $this->assertFalse(is_null($bal));
     }
 
 
-    public function testRequestToPay()
+    public function testTransfer()
     {
-        $coll = new Inpayments();
+        $coll = new Outpayment();
 
         $params = ['mobile' => "256782181656", 'payee_note' => "34", 'payer_message' => "12", 'external_id' => "ref", 'currency' => "EUR", 'amount' => "500"];
 

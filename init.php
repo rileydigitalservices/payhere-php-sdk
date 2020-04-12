@@ -26,12 +26,15 @@ require(dirname(__FILE__) . '/lib/Error/Authentication.php');
 //models
 
 require(dirname(__FILE__) . '/lib/models/ResourceFactory.php');
-require(dirname(__FILE__) . '/lib/models/Inpayment.php');
+require(dirname(__FILE__) . '/lib/models/RequestToPay.php');
+require(dirname(__FILE__) . '/lib/models/Transfer.php');
+require(dirname(__FILE__) . '/lib/models/Transaction.php');
 
 
 
 require(dirname(__FILE__) . '/lib/Request.php');
 require(dirname(__FILE__) . '/lib/Response.php');
 require(dirname(__FILE__) . '/lib/Inpayment.php');
+require(dirname(__FILE__) . '/lib/Outpayment.php');
 
 require(dirname(__FILE__) . '/lib/test.php');

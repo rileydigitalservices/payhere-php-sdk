@@ -186,12 +186,12 @@ class CurlClient implements ClientInterface
                 $absUrl = "$absUrl?$encoded";
             }
         } elseif ($method == 'post') {
-            $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] =  Util\Util::encodeParameters($params);
+            $opts[CURLOPT_POST] = true;
+            $opts[CURLOPT_POSTFIELDS] =  json_encode($params);
         } elseif ($method == 'delete') {
             $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
             if (count($params) > 0) {
-                $encoded = Util\Util::encodeParameters($params);
+                $encoded = json_encode($params);
                 $absUrl = "$absUrl?$encoded";
             }
         } else {
@@ -321,7 +321,9 @@ class CurlClient implements ClientInterface
                 $msg = "Unexpected error communicating with Payhere.  "
                  . "If this problem persists,";
         }
-        $msg .= " let us know at support@stripe.com.";
+        $msg .= " let us know at acellam.guy@gmail.com
+        
+        .";
 
         $msg .= "\n\n(Network error [errno $errno]: $message)";
 

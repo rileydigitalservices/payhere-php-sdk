@@ -32,10 +32,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $this-> _targetEnvironment = Payhere::getTargetEnvironment();
 
-
-        $this->_currency = Payhere::getCurrency();
-
-
         $this->_collectionApiSecret = Payhere::getCollectionApiSecret();
 
         $this->_collectionPrimaryKey = Payhere::getCollectionPrimaryKey();

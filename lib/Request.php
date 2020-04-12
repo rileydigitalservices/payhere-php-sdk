@@ -2,6 +2,8 @@
 
 namespace Payhere;
 
+use Payhere\Error\PayhereError;
+
 /**
  * Class Request
  *
@@ -9,26 +11,35 @@ namespace Payhere;
  */
 class Request
 {
-    public  $_baseUrl;
+
+    public $_baseUrl;
 
 
     //@var string target environment
-    public  $_targetEnvironment;
+    public $_targetEnvironment;
 
 
     // @var string the currency of http calls
-    public  $_currency;
-
+    public $_currency;
 
 
     // @var string The Payhere Collections API Secret.
-    public  $_collectionApiSecret;
+    public $_collectionApiSecret;
 
     // @var string The Payhere collections primary Key
-    public  $_collectionPrimaryKey;
+    public $_collectionPrimaryKey;
 
     // @var string The Payhere collections User Id
-    public  $_collectionUserId ;
+    public $_collectionUserId;
+
+    // @var string The Payhere disbursements API Secret.
+    public $_disbursementApiSecret;
+
+    // @var string The Payhere disbursements primary Key
+    public $_disbursementPrimaryKey;
+
+    // @var string The Payhere disbursements User Id
+    public $_disbursementUserId;
 
 
     /**
@@ -37,14 +48,13 @@ class Request
     private static $_httpClient;
 
 
-
     /**
-     * ApiRequest constructor.
+     * Request constructor.
      *
      * @param string|null $apiKey
      * @param string|null $apiBase
      */
-    public function __construct($currency=null)
+    public function __construct($currency = null)
     {
 
         if (!$currency) {
@@ -52,8 +62,6 @@ class Request
         }
         $this->_currency = $currency;
     }
-
-
 
 
     /**
@@ -99,20 +107,8 @@ class Request
      *
      * @return array An array whose first element is an API response and second
      *    element is the API key used to make the request.
-     * @throws Error\Api
-     * @throws Error\Authentication
-     * @throws Error\Card
-     * @throws Error\InvalidRequest
-     * @throws Error\OAuth\InvalidClient
-     * @throws Error\OAuth\InvalidGrant
-     * @throws Error\OAuth\InvalidRequest
-     * @throws Error\OAuth\InvalidScope
-     * @throws Error\OAuth\UnsupportedGrantType
-     * @throws Error\OAuth\UnsupportedResponseType
-     * @throws Error\Permission
-     * @throws Error\RateLimit
-     * @throws Error\Idempotency
-     * @throws Error\ApiConnection
+     * @throws Error\PayhereError
+     * @throws Error\Connection
      */
     public function request($method, $url, $params = null, $headers = null)
     {
@@ -135,38 +131,16 @@ class Request
         );
 
 
-
         $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
         $resp = new ApiResponse($rbody, $rcode, $rheaders, $json);
         return $resp;
     }
 
     /**
-     * @param string $rbody A JSON string.
-     * @param int $rcode
-     * @param array $rheaders
-     * @param array $resp
-     *
-     * @throws Error\InvalidRequest if the error is caused by the user.
-     * @throws Error\Authentication if the error is caused by a lack of
-     *    permissions.
-     * @throws Error\Permission if the error is caused by insufficient
-     *    permissions.
-     * @throws Error\Card if the error is the error code is 402 (payment
-     *    required)
-     * @throws Error\InvalidRequest if the error is caused by the user.
-     * @throws Error\Idempotency if the error is caused by an idempotency key.
-     * @throws Error\OAuth\InvalidClient
-     * @throws Error\OAuth\InvalidGrant
-     * @throws Error\OAuth\InvalidRequest
-     * @throws Error\OAuth\InvalidScope
-     * @throws Error\OAuth\UnsupportedGrantType
-     * @throws Error\OAuth\UnsupportedResponseType
-     * @throws Error\Permission if the error is caused by insufficient
-     *    permissions.
-     * @throws Error\RateLimit if the error is caused by too many requests
-     *    hitting the API.
-     * @throws Error\Api otherwise.
+     * @param string $rbody    A JSON string.
+     * @param int    $rcode
+     * @param array  $rheaders
+     * @param array  $resp
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
@@ -198,7 +172,7 @@ class Request
      * @param array  $resp
      * @param array  $errorData
      *
-     * @return Error\RateLimit|Error\Idempotency|Error\InvalidRequest|Error\Authentication|Error\Card|Error\Permission|Error\Api
+     * @return PayhereError
      */
     private static function _specificAPIError($rbody, $rcode, $rheaders, $resp, $errorData)
     {
@@ -218,54 +192,17 @@ class Request
                     return new Error\Idempotency($msg, $rcode, $rbody, $resp, $rheaders);
                 }
 
-            // intentional fall-through
+                // intentional fall-through
             case 404:
                 return new Error\InvalidRequest($msg, $param, $rcode, $rbody, $resp, $rheaders);
             case 401:
                 return new Error\Authentication($msg, $rcode, $rbody, $resp, $rheaders);
-            case 402:
-                return new Error\Card($msg, $param, $code, $rcode, $rbody, $resp, $rheaders);
-            case 403:
-                return new Error\Permission($msg, $rcode, $rbody, $resp, $rheaders);
-            case 429:
-                return new Error\RateLimit($msg, $param, $rcode, $rbody, $resp, $rheaders);
+
             default:
                 return new Error\PayhereError($msg, $rcode, $rbody, $resp, $rheaders);
         }
     }
 
-    /**
-     * @static
-     *
-     * @param string|bool $rbody
-     * @param int         $rcode
-     * @param array       $rheaders
-     * @param array       $resp
-     * @param string      $errorCode
-     *
-     * @return null|Error\OAuth\InvalidClient|Error\OAuth\InvalidGrant|Error\OAuth\InvalidRequest|Error\OAuth\InvalidScope|Error\OAuth\UnsupportedGrantType|Error\OAuth\UnsupportedResponseType
-     */
-    private static function _specificOAuthError($rbody, $rcode, $rheaders, $resp, $errorCode)
-    {
-        $description = isset($resp['error_description']) ? $resp['error_description'] : $errorCode;
-
-        switch ($errorCode) {
-            case 'invalid_client':
-                return new Error\OAuth\InvalidClient($errorCode, $description, $rcode, $rbody, $resp, $rheaders);
-            case 'invalid_grant':
-                return new Error\OAuth\InvalidGrant($errorCode, $description, $rcode, $rbody, $resp, $rheaders);
-            case 'invalid_request':
-                return new Error\OAuth\InvalidRequest($errorCode, $description, $rcode, $rbody, $resp, $rheaders);
-            case 'invalid_scope':
-                return new Error\OAuth\InvalidScope($errorCode, $description, $rcode, $rbody, $resp, $rheaders);
-            case 'unsupported_grant_type':
-                return new Error\OAuth\UnsupportedGrantType($errorCode, $description, $rcode, $rbody, $resp, $rheaders);
-            case 'unsupported_response_type':
-                return new Error\OAuth\UnsupportedResponseType($errorCode, $description, $rcode, $rbody, $resp, $rheaders);
-        }
-
-        return null;
-    }
 
     /**
      * @static
@@ -291,33 +228,20 @@ class Request
     }
 
 
-
-
-
-
     /**
      * @param string $rbody
      * @param int    $rcode
      * @param array  $rheaders
      *
      * @return mixed
-     * @throws Error\Api
-     * @throws Error\Authentication
-     * @throws Error\Card
-     * @throws Error\InvalidRequest
-     * @throws Error\OAuth\InvalidClient
-     * @throws Error\OAuth\InvalidGrant
-     * @throws Error\OAuth\InvalidRequest
-     * @throws Error\OAuth\InvalidScope
-     * @throws Error\OAuth\UnsupportedGrantType
-     * @throws Error\OAuth\UnsupportedResponseType
-     * @throws Error\Permission
-     * @throws Error\RateLimit
-     * @throws Error\Idempotency
+     * @throws Error\PayhereError
      */
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
         $resp = json_decode($rbody, true);
+        if ($rcode == 202) {
+            return $resp;
+        }
         $jsonError = json_last_error();
         if ($resp === null && $jsonError !== JSON_ERROR_NONE) {
             $msg = "Invalid response body from API: $rbody "
@@ -342,7 +266,6 @@ class Request
     }
 
 
-
     /**
      * @return HttpClient\ClientInterface
      */
@@ -353,5 +276,4 @@ class Request
         }
         return self::$_httpClient;
     }
-
 }

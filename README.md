@@ -6,7 +6,7 @@ Riley Digital Services Payhere API SDK for PHP
 [![Total Downloads](https://poser.pugx.org/rileydigitalservices/payhere-php-sdk/downloads.svg)](https://packagist.org/packages/rileydigitalservices/payhere-php-sdk)
 [![License](https://poser.pugx.org/rileydigitalservices/payhere-php-sdk/license.svg)](https://packagist.org/packages/rileydigitalservices/payhere-php-sdk)
 [![Coverage Status](https://coveralls.io/repos/github/rileydigitalservices/payhere-php-sdk/badge.svg?branch=master)](https://coveralls.io/github/rileydigitalservices/payhere-php-sdk?branch=master)
-[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/momo-api-developers/)
+[![Join the community on Spectrum](https://withspectrum.github.io/badge/badge.svg)](https://spectrum.chat/pahere-api-developers/)
 
 
 

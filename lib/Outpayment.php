@@ -4,29 +4,35 @@ namespace Payhere;
 
 use Payhere\HttpClient\ClientInterface;
 use Payhere\models\ResourceFactory;
+use Payhere\Util\Util;
 
-class Inpayment extends Request
+class Outpayment extends Request
 {
     public $headers;
 
+
     public $authToken;
 
+
     public $_baseUrl;
+
 
     //@var string target environment
     public $_targetEnvironment;
 
+
     // @var string the currency of http calls
     public $_currency;
 
-    // @var string The Payhere Inpayments API Secret.
-    public $_collectionApiSecret;
 
-    // @var string The Payhere collections primary Key
-    public $_collectionPrimaryKey;
+    // @var string The Payhere disbursements API Secret.
+    public $_disbursementApiSecret;
 
-    // @var string The Payhere collections User Id
-    public $_collectionUserId;
+    // @var string The Payhere disbursements primary Key
+    public $_disbursementPrimaryKey;
+
+    // @var string The Payhere disbursements User Id
+    public $_disbursementUserId;
 
 
     /**
@@ -36,14 +42,13 @@ class Inpayment extends Request
 
 
     /**
-     * Inpayment constructor.
+     * Outpayment constructor.
      *
-     * @param string|null $apiKey
-     * @param string|null $apiBase
+     * @param string|null $currency
+     * @param string|null $baseUrl
      */
-    public function __construct($currency = null, $baseUrl = null, $targetEnvironment = null, $collectionApiSecret = null, $collectionPrimaryKey = null, $collectionUserId = null)
+    public function __construct($currency = null, $baseUrl = null, $targetEnvironment = null, $disbursementApiSecret = null, $disbursementPrimaryKey = null, $disbursementUserId = null)
     {
-
         if (!$currency) {
             $currency = Payhere::getCurrency();
         }
@@ -62,22 +67,22 @@ class Inpayment extends Request
         $this->_targetEnvironment = $targetEnvironment;
 
 
-        if (!$collectionApiSecret) {
-            $collectionApiSecret = Payhere::getInpaymentApiSecret();
+        if (!$disbursementApiSecret) {
+            $disbursementApiSecret = Payhere::getOutpaymentApiSecret();
         }
-        $this->_collectionApiSecret = $collectionApiSecret;
+        $this->_disbursementApiSecret = $disbursementApiSecret;
 
 
-        if (!$collectionPrimaryKey) {
-            $collectionPrimaryKey = Payhere::getInpaymentPrimaryKey();
+        if (!$disbursementPrimaryKey) {
+            $disbursementPrimaryKey = Payhere::getOutpaymentPrimaryKey();
         }
-        $this->_collectionPrimaryKey = $collectionPrimaryKey;
+        $this->_disbursementPrimaryKey = $disbursementPrimaryKey;
 
 
-        if (!$collectionUserId) {
-            $collectionUserId = Payhere::getInpaymentUserId();
+        if (!$disbursementUserId) {
+            $disbursementUserId = Payhere::getOutpaymentUserId();
         }
-        $this->_collectionUserId = $collectionUserId;
+        $this->_disbursementUserId = $disbursementUserId;
     }
 
 
@@ -89,18 +94,16 @@ class Inpayment extends Request
      */
     public function getToken($params = null, $options = null)
     {
-
-
-        $url = $this->_baseUrl . '/collection/token/';
+        $url = $this->_baseUrl . '/disbursement/token/';
 
 
         $encodedString = base64_encode(
-            Payhere::getInpaymentUserId() . ':' . Payhere::getInpaymentApiSecret()
+            Payhere::getOutpaymentUserId() . ':' . Payhere::getOutpaymentApiSecret()
         );
         $headers = [
             'Authorization' => 'Basic ' . $encodedString,
             'Content-Type' => 'application/json',
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey()
+            'Ocp-Apim-Subscription-Key' => Payhere::getOutpaymentPrimaryKey()
         ];
 
 
@@ -121,8 +124,7 @@ class Inpayment extends Request
      */
     public function getBalance($params = null, $options = null)
     {
-
-        $url = $this->_baseUrl . "/collection/v1_0/account/balance";
+        $url = $this->_baseUrl . "/disbursement/v1_0/account/balance";
 
         $token = $this->getToken()->getToken();
 
@@ -131,13 +133,18 @@ class Inpayment extends Request
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
             "X-Target-Environment" => $this->_targetEnvironment,
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey()
+            'Ocp-Apim-Subscription-Key' => Payhere::getOutpaymentPrimaryKey()
         ];
 
 
         $response = self::request('get', $url, $params, $headers);
 
         return $response;
+
+
+        $obj = ResourceFactory::balanceFromJson($response->json);
+
+        return $obj;
     }
 
 
@@ -149,7 +156,7 @@ class Inpayment extends Request
      */
     public function getTransaction($trasaction_id, $params = null)
     {
-        $url = $this->_baseUrl . "/collection/v1_0/requesttopay/" . $trasaction_id;
+        $url = $this->_baseUrl . "/disbursement/v1_0/transfer/" . $trasaction_id;
 
         $token = $this->getToken()->getToken();
 
@@ -157,12 +164,12 @@ class Inpayment extends Request
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
             "X-Target-Environment" => $this->_targetEnvironment,
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey(),
+            'Ocp-Apim-Subscription-Key' => Payhere::getOutpaymentPrimaryKey(),
         ];
 
         $response = self::request('get', $url, $params, $headers);
 
-        $obj = ResourceFactory::requestToPayFromJson($response->json);
+        $obj = ResourceFactory::transferFromJson($response->json);
 
         return $obj;
     }
@@ -174,12 +181,10 @@ class Inpayment extends Request
      *
      * @return Charge The refunded charge.
      */
-    public function requestToPay($params, $options = null)
+    public function transfer($params, $options = null)
     {
-
-
         self::_validateParams($params);
-        $url = $this->_baseUrl . "/collection/v1_0/requesttopay";
+        $url = $this->_baseUrl . "/disbursement/v1_0/transfer";
 
         $token = $this->getToken()->getToken();
 
@@ -189,13 +194,13 @@ class Inpayment extends Request
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
             "X-Target-Environment" => $this->_targetEnvironment,
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey(),
+            'Ocp-Apim-Subscription-Key' => Payhere::getOutpaymentPrimaryKey(),
             "X-Reference-Id" => $transaction
         ];
 
 
         $data = [
-            "payer" => [
+            "payee" => [
                 "partyIdType" => "MSISDN",
                 "partyId" => $params['mobile']],
             "payeeNote" => $params['payee_note'],
@@ -212,9 +217,8 @@ class Inpayment extends Request
     }
 
 
-    public function isActive($mobile, $params = [])
+    public function isActive($mobile, $params = null)
     {
-
         $token = $this->getToken()->getToken();
 
 
@@ -222,10 +226,12 @@ class Inpayment extends Request
             'Authorization' => 'Bearer ' . $token,
             'Content-Type' => 'application/json',
             "X-Target-Environment" => $this->_targetEnvironment,
-            'Ocp-Apim-Subscription-Key' => Payhere::getInpaymentPrimaryKey()
+            'Ocp-Apim-Subscription-Key' => Payhere::getOutpaymentPrimaryKey()
         ];
 
-        $url = $this->_baseUrl . "/collection/v1_0/accountholder/MSISDN/" . $mobile . "/active";
+
+        $url = $this->_baseUrl . "/disbursement/v1_0/accountholder/MSISDN/" . $mobile . "/active";
+
 
         $response = self::request('get', $url, $params, $headers);
 

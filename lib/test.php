@@ -1,10 +1,13 @@
 <?php
+
 namespace Payhere;
 
-require_once("Inpayment.php");
+require_once "Inpayment.php";
 
-class Test{
-    function  getToken(){
+class Test
+{
+    public function getToken()
+    {
         $coll = Inpayment::getToken();
         echo $coll;
     }
@@ -12,7 +15,6 @@ class Test{
 
 
 if (!debug_backtrace()) {
-
     $obj = new Test();
-     $obj->getToken();
+    $obj->getToken();
 }

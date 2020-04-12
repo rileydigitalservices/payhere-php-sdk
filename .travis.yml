@@ -26,6 +26,6 @@ before_install:
   - travis_retry composer install
 
 
-script: ./build.php ${AUTOLOAD}
+script: ./build.php
 
 after_script: ./vendor/bin/coveralls -v

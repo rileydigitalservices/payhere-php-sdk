@@ -5,14 +5,12 @@ namespace Payhere;
 /**
  * Class Payhere
  *
- * @package momoApi
+ * @package Payhere
  */
 class Payhere
 {
-
     // @var string the base url of the API
-    const VERSION = '6.35.2';
-
+    const version = 'v1';
 
     //@var string target environment
     public static $baseUrl;
@@ -21,40 +19,15 @@ class Payhere
     // @var string the currency of http calls
     public static $targetEnvironment;
 
-
-    // @var string The Payhere Inpayments API Secret.
-    public static $currency;
-
     // @var string The Payhere collections primary Key
-    public static $collectionApiSecret;
+    public static $username;
 
     // @var string The Payhere collections User Id
-    public static $collectionPrimaryKey;
+    public static $password;
 
 
     // @var string The Payhere remittance API Secret.
-    public static $collectionUserId;
-
-    // @var string The Payhere remittance primary Key
-    public static $remittanceApiSecret;
-
-    // @var string The Payhere remittance User Id
-    public static $remittancePrimaryKey;
-
-
-    // @var string The Payhere disbursements API Secret.
-    public static $remittanceUserId;
-
-    // @var string The Payhere disbursements primary Key
-    public static $disbursementApiSecret;
-
-    // @var string The Payhere disbursements User Id
-    public static $disbursementPrimaryKey;
-
-
-    // @var boolean Defaults to true.
-    public static $disbursementUserId;
-
+    public static $appId;
 
     // @var Util\LoggerInterface|null The logger to which the library will
     //   produce messages.
@@ -76,14 +49,14 @@ class Payhere
      */
     public static function getBaseUrl()
     {
-        $burl = getenv("BASE_URL");
+        $burl = getenv("PAYHERE_BASE_URL");
 
         if (isset(self::$baseUrl)) {
             return self::$baseUrl;
         } else if ($burl) {
             return $burl;
         } else {
-            return "https://ericssonbasicapi2.azure-api.net";
+            return "http://api.payhere.africa/api/".self::version;
         }
     }
 
@@ -104,7 +77,7 @@ class Payhere
     public static function getTargetEnvironment()
     {
 
-        $targ = getenv("TARGET_ENVIRONMENT");
+        $targ = getenv("PAYHERE_TARGET_ENVIRONMENT");
         if (isset(self::$targetEnvironment)) {
             return self::$targetEnvironment;
         }
@@ -129,15 +102,15 @@ class Payhere
 
 
     /**
-     * @return string The collectionApiSecret.
+     * @return string The username.
      */
-    public static function getInpaymentApiSecret()
+    public static function getUsername()
     {
 
-        $arg = getenv("COLLECTION_API_SECRET");
+        $arg = getenv("PAYHERE_USERNAME");
 
-        if (isset(self::$collectionApiSecret)) {
-            return self::$collectionApiSecret;
+        if (isset(self::$username)) {
+            return self::$username;
         }
 
         if ($arg) {
@@ -147,25 +120,25 @@ class Payhere
 
 
     /**
-     * Sets the collectionApiSecret.
+     * Sets the username.
      *
-     * @param string $collectionApiSecret
+     * @param string $username
      */
-    public static function setInpaymentApiSecret($collectionApiSecret)
+    public static function setUsername($username)
     {
-        self::$collectionApiSecret = $collectionApiSecret;
+        self::$username = $username;
     }
 
 
     /**
-     * @return string The collectionPrimaryKey.
+     * @return string The password.
      */
-    public static function getInpaymentPrimaryKey()
+    public static function getPassword()
     {
-        $arg = getenv("COLLECTION_PRIMARY_KEY");
+        $arg = getenv("PAYHERE_PASSWORD");
 
-        if (isset(self::$collectionPrimaryKey)) {
-            return self::$collectionPrimaryKey;
+        if (isset(self::$password)) {
+            return self::$password;
         }
 
         if ($arg) {
@@ -175,26 +148,26 @@ class Payhere
 
 
     /**
-     * Sets the collectionPrimaryKey.
+     * Sets the password.
      *
-     * @param string $collectionPrimaryKey
+     * @param string $password
      */
-    public static function setInpaymentPrimaryKey($collectionPrimaryKey)
+    public static function setPassword($password)
     {
-        self::$collectionPrimaryKey = $collectionPrimaryKey;
+        self::$password = $password;
     }
 
 
     /**
-     * @return string The collectionUserId.
+     * @return string The appId.
      */
-    public static function getInpaymentUserId()
+    public static function getAppId()
     {
 
-        $arg = getenv("COLLECTION_USER_ID");
+        $arg = getenv("PAYHERE_APP_ID");
 
-        if (isset(self::$collectionUserId)) {
-            return self::$collectionUserId;
+        if (isset(self::$appId)) {
+            return self::$appId;
         }
 
         if ($arg) {
@@ -204,100 +177,14 @@ class Payhere
 
 
     /**
-     * Sets the collectionUserId.
+     * Sets the appId.
      *
-     * @param string $collectionUserId
+     * @param string $appId
      */
-    public static function setInpaymentUserId($collectionUserId)
+    public static function setAppId($appId)
     {
-        self::$collectionUserId = $collectionUserId;
+        self::$appId = $appId;
     }
-
-    /**
-     * @return string The disbursementApiSecret.
-     */
-    public static function getOutpaymentApiSecret()
-    {
-        $arg = getenv("DISBURSEMENT_API_SECRET");
-
-        if (isset(self::$disbursementApiSecret)) {
-            return self::$disbursementApiSecret;
-        }
-
-        if ($arg) {
-            return $arg;
-        }
-    }
-
-
-    /**
-     * Sets the disbursementApiSecret.
-     *
-     * @param string $disbursementApiSecret
-     */
-    public static function setOutpaymentApiSecret($disbursementApiSecret)
-    {
-        self::$disbursementApiSecret = $disbursementApiSecret;
-    }
-
-
-    /**
-     * @return string The disbursementPrimaryKey.
-     */
-    public static function getOutpaymentPrimaryKey()
-    {
-
-        $arg = getenv("DISBURSEMENT_PRIMARY_KEY");
-
-        if (isset(self::$disbursementPrimaryKey)) {
-            return self::$disbursementPrimaryKey;
-        }
-
-        if ($arg) {
-            return $arg;
-        }
-    }
-
-
-    /**
-     * Sets the disbursementPrimaryKey.
-     *
-     * @param string $disbursementPrimaryKey
-     */
-    public static function setOutpaymentPrimaryKey($disbursementPrimaryKey)
-    {
-        self::$disbursementPrimaryKey = $disbursementPrimaryKey;
-    }
-
-
-    /**
-     * @return string The disbursementUserId .
-     */
-    public static function getOutpaymentUserId()
-    {
-
-        $arg = getenv("DISBURSEMENT_USER_ID");
-
-        if (isset(self::$disbursementUserId)) {
-            return self::$disbursementUserId;
-        }
-
-        if ($arg) {
-            return $arg;
-        }
-    }
-
-
-    /**
-     * Sets the disbursementUserId.
-     *
-     * @param string $disbursementUserId
-     */
-    public static function setOutpaymentUserId($disbursementUserId)
-    {
-        self::$disbursementUserId = $disbursementUserId;
-    }
-
 
     /**
      * @return Util\LoggerInterface The logger to which the library will

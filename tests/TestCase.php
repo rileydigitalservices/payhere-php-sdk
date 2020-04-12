@@ -7,21 +7,21 @@ namespace Payhere;
  */
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    public  $_baseUrl;
+    public $_baseUrl;
 
 
     //@var string target environment
-    public  $_targetEnvironment;
+    public $_targetEnvironment;
 
 
     // @var string The Payhere API username.
-    public  $_username;
+    public $_username;
 
     // @var string The Payhere password
-    public  $_password;
+    public $_password;
 
     // @var string The Payhere collections User Id
-    public  $_appId ;
+    public $_appId ;
 
 
 
@@ -55,12 +55,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
          Payhere::setTargetEnvironment($this-> _targetEnvironment);
 
-        Payhere::setUsername( $this->_username);
+        Payhere::setUsername($this->_username);
 
          Payhere::setPassword($this->_password);
 
-        Payhere::setAppId( $this->_appId );
-
+        Payhere::setAppId($this->_appId);
     }
 
     /**

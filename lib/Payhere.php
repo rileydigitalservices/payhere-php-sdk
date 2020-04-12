@@ -10,7 +10,7 @@ namespace Payhere;
 class Payhere
 {
     // @var string the base url of the API
-    const version = 'v1';
+    const VERSION = 'v1';
 
     //@var string target environment
     public static $baseUrl;
@@ -56,10 +56,10 @@ class Payhere
         } else if ($burl) {
             return $burl;
         } else {
-            if(self::getTargetEnvironment() == "sandbox"){
-               return "http://sandbox.payhere.africa/api/".self::version;
+            if (self::getTargetEnvironment() == "sandbox") {
+                return "http://sandbox.payhere.africa/api/".self::VERSION;
             }
-            return "http://api.payhere.africa/api/".self::version;
+            return "http://api.payhere.africa/api/".self::VERSION;
         }
     }
 

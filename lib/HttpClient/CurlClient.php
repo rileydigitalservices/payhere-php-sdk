@@ -179,7 +179,6 @@ class CurlClient implements ClientInterface
         $params = Util\Util::objectsToIds($params);
 
         if ($method == 'get') {
-
             $opts[CURLOPT_HTTPGET] = 1;
             if (count($params) > 0) {
                 $encoded = Util\Util::encodeParameters($params);

@@ -57,6 +57,4 @@ class Inpayments extends Payments
 
         return $inpayment;
     }
-
-    
 }

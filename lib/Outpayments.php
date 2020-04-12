@@ -57,6 +57,4 @@ class Outpayments extends Payments
 
         return $outpayment;
     }
-
-    
 }

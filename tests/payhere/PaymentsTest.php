@@ -39,5 +39,4 @@ class PaymentsTest extends TestCase
 
         $this->assertFalse(is_null($header));
     }
-    
 }

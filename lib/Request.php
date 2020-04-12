@@ -14,33 +14,17 @@ class Request
 
     public $_baseUrl;
 
-
     //@var string target environment
     public $_targetEnvironment;
 
+    // @var string The Payhere username
+    public $_username;
 
-    // @var string the currency of http calls
-    public $_currency;
+    // @var string The Payhere password
+    public $_password;
 
-
-    // @var string The Payhere Collections API Secret.
-    public $_collectionApiSecret;
-
-    // @var string The Payhere collections primary Key
-    public $_collectionPrimaryKey;
-
-    // @var string The Payhere collections User Id
-    public $_collectionUserId;
-
-    // @var string The Payhere disbursements API Secret.
-    public $_disbursementApiSecret;
-
-    // @var string The Payhere disbursements primary Key
-    public $_disbursementPrimaryKey;
-
-    // @var string The Payhere disbursements User Id
-    public $_disbursementUserId;
-
+    // @var string The Payhere app id
+    public $_appId;
 
     /**
      * @var HttpClient\ClientInterface
@@ -54,13 +38,9 @@ class Request
      * @param string|null $apiKey
      * @param string|null $apiBase
      */
-    public function __construct($currency = null)
+    public function __construct()
     {
 
-        if (!$currency) {
-            $$currency = Payhere::getCurrency();
-        }
-        $this->_currency = $currency;
     }
 
 

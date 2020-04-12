@@ -34,7 +34,7 @@ require(dirname(__FILE__) . '/lib/models/Transaction.php');
 
 require(dirname(__FILE__) . '/lib/Request.php');
 require(dirname(__FILE__) . '/lib/Response.php');
-require(dirname(__FILE__) . '/lib/Inpayment.php');
-require(dirname(__FILE__) . '/lib/Outpayment.php');
+require(dirname(__FILE__) . '/lib/Inpayments.php');
+require(dirname(__FILE__) . '/lib/Outpayments.php');
 
 require(dirname(__FILE__) . '/lib/test.php');

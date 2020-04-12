@@ -14,14 +14,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
     public  $_targetEnvironment;
 
 
-    // @var string The Payhere Collections API Secret.
-    public  $_collectionApiSecret;
+    // @var string The Payhere API username.
+    public  $_username;
 
-    // @var string The Payhere collections primary Key
-    public  $_collectionPrimaryKey;
+    // @var string The Payhere password
+    public  $_password;
 
     // @var string The Payhere collections User Id
-    public  $_collectionUserId ;
+    public  $_appId ;
 
 
 
@@ -32,11 +32,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
         $this-> _targetEnvironment = Payhere::getTargetEnvironment();
 
-        $this->_collectionApiSecret = Payhere::getCollectionApiSecret();
+        $this->_username = Payhere::getUsername();
 
-        $this->_collectionPrimaryKey = Payhere::getCollectionPrimaryKey();
+        $this->_password = Payhere::getPassword();
 
-        $this->_collectionUserId  = Payhere::getCollectionUserId();
+        $this->_appId  = Payhere::getAppId();
 
 
         // Set up the HTTP client mocker
@@ -55,11 +55,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
          Payhere::setTargetEnvironment($this-> _targetEnvironment);
 
-        Payhere::setCollectionApiSecret( $this->_collectionApiSecret);
+        Payhere::setUsername( $this->_username);
 
-         Payhere::setCollectionPrimaryKey($this->_collectionPrimaryKey);
+         Payhere::setPassword($this->_password);
 
-        Payhere::setCollectionUserId( $this->_collectionUserId );
+        Payhere::setAppId( $this->_appId );
 
     }
 

@@ -19,10 +19,10 @@ class Payhere
     // @var string the currency of http calls
     public static $targetEnvironment;
 
-    // @var string The Payhere collections primary Key
+    // @var string The Payhere username
     public static $username;
 
-    // @var string The Payhere collections User Id
+    // @var string The Payhere password
     public static $password;
 
 
@@ -56,6 +56,9 @@ class Payhere
         } else if ($burl) {
             return $burl;
         } else {
+            if(self::getTargetEnvironment() == "sandbox"){
+               return "http://sandbox.payhere.africa/api/".self::version;
+            }
             return "http://api.payhere.africa/api/".self::version;
         }
     }

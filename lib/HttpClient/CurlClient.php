@@ -297,7 +297,7 @@ class CurlClient implements ClientInterface
      * @param int $errno
      * @param string $message
      * @param int $numRetries
-     * @throws Error\ApiConnection
+     * @throws Error\Connection
      */
     private function handleCurlError($url, $errno, $message, $numRetries)
     {
@@ -308,7 +308,7 @@ class CurlClient implements ClientInterface
                 $msg = "Could not connect to Payhere ($url).  Please check your "
                  . "internet connection and try again.  If this problem persists, "
                  . "you should check Payhere's service status at "
-                 . "https://twitter.com/stripestatus, or";
+                 . "https://status.payhere.africa, or";
                 break;
             case CURLE_SSL_CACERT:
             case CURLE_SSL_PEER_CERTIFICATE:
@@ -331,7 +331,7 @@ class CurlClient implements ClientInterface
             $msg .= "\n\nRequest was retried $numRetries times.";
         }
 
-        throw new Error\ApiConnection($msg);
+        throw new Error\Connection($msg);
     }
 
     /**

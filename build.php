@@ -29,7 +29,7 @@ if ($autoload) {
     }
 }
 
-$config = $autoload ? 'phpunit.xml' : 'phpunit.no_autoload.xml';
+$config = $autoload ? 'phpunit.autoload.xml' : 'phpunit.no_autoload.xml';
 passthru("./vendor/bin/phpunit -c $config", $returnStatus);
 if ($returnStatus !== 0) {
     exit(1);

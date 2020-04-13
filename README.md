@@ -50,7 +50,7 @@ If you use Composer, these dependencies should be handled automatically. If you 
 ## Getting Started
 
 
-# Sandbox Environment
+# Account details
 
 ## Getting environment API user 
 
@@ -66,10 +66,9 @@ but can be overidden using the Payhere builder
 
 * `BASE_URL`: An optional base url to the MTN Momo API. By default the staging base url will be used
 * `ENVIRONMENT`: Optional enviroment, either "sandbox" or "production". Default is 'sandbox'
-* `CALLBACK_HOST`: The domain where you webhooks urls are hosted. This is mandatory.
-* `COLLECTION_PRIMARY_KEY`: The collections API primary key,
-* `COLLECTION_USER_ID`:  The collection User Id
-* `COLLECTION_API_SECRET`:  The Collection API secret
+* `PAYHERE_APP_ID`: The application identity for your app
+* `PAYHERE_USERNAME`:  The username for authentication
+* `PAYHERE_PASSWORD`:  The password for authentication
 
 you can also use the Payhere to globally set the different variables.
 
@@ -80,33 +79,27 @@ Payhere::setBaseUrl('base');
 
 Payhere::setTargetEnvironment("targetenv");
 
-Payhere::setCurrency("UGX");
+Payhere::setAppId("app_id");
 
-Payhere::setCollectionApiSecret("collection_api_secret");
+Payhere::setUsername("username");
 
-Payhere::setCollectionPrimaryKey("collection_primary_key");
-
-Payhere::setCollectionUserId("collection_user_id");
+Payhere::setPassword("password");
 ```
 
 
 
-## Collections
+## Inpayments
 
-The collections client can be created with the following paramaters. Note that the `COLLECTION_USER_ID` and `COLLECTION_API_SECRET` for production are provided on the MTN OVA dashboard;
+The inpayments client used for receiving money 
 
-* `COLLECTION_PRIMARY_KEY`: Primary Key for the `Collection` product on the developer portal.
-* `COLLECTION_USER_ID`: For sandbox, use the one generated with the `mtnmomo` command.
-* `COLLECTION_API_SECRET`: For sandbox, use the one generated with the `mtnmomo` command.
-
-You can create a collection client with the following:
+You can create a inpayments client with the following:
 
 ```php
 
 
 
 
-$client = Collection();
+$client = Inpayments();
 ```
 
 ### Methods
@@ -114,10 +107,6 @@ $client = Collection();
 1. `requestToPay`: This operation is used to request a payment from a consumer (Payer). The payer will be asked to authorize the payment. The transaction is executed once the payer has authorized the payment. The transaction will be in status PENDING until it is authorized or declined by the payer or it is timed out by the system. Status of the transaction can be validated by using `getTransactionStatus`.
 
 2. `getTransaction`: Retrieve transaction information using the `transactionId` returned by `requestToPay`. You can invoke it at intervals until the transaction fails or succeeds. If the transaction has failed, it will throw an appropriate error. 
-
-3. `getBalance`: Get the balance of the account.
-
-4. `isPayerActive`: check if an account holder is registered and active in the system.
 
 ### Sample Code
 
@@ -144,7 +133,7 @@ echo $curl->getConnectTimeout(); // 5
 // tell Payhere to use the tweaked client
 \Payhere\ApiRequest::setHttpClient($curl);
 
-// use the Momo API client as you normally would
+// use the Payhere API client as you normally would
 ```
 
 ## Custom cURL Options (e.g. proxies)

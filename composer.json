@@ -1,5 +1,5 @@
 {
-    "name": "payhere\/payhere-php-sdk",
+    "name": "rileydigitalservices\/payhere-php-sdk",
     "description": "Payhere SDK for PHP",
     "type": "library",
     "keywords": [

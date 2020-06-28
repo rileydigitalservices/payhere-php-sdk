@@ -61,70 +61,93 @@ The redentials in the sandbox environment can be used straight away. In producti
 
 ## Configuration
 
-Before we can fully utilize the library, we need to specify global configurations. The global configuration using the requestOpts builder. By default, these are picked from environment variables,
-but can be overidden using the Payhere builder
+Before we can fully utilize the library, we need to specify global configurations. The global configuration using the requestOpts builder. By default, these are picked from environment variables,but can be overidden using the Payhere builder
 
-* `BASE_URL`: An optional base url to the MTN Momo API. By default the staging base url will be used
+* `BASE_URL`: An optional base url to the Payhere API. By default the staging base url will be used
 * `ENVIRONMENT`: Optional enviroment, either "sandbox" or "production". Default is 'sandbox'
-* `CALLBACK_HOST`: The domain where you webhooks urls are hosted. This is mandatory.
-* `COLLECTION_PRIMARY_KEY`: The collections API primary key,
-* `COLLECTION_USER_ID`:  The collection User Id
-* `COLLECTION_API_SECRET`:  The Collection API secret
+* `APP_ID`: The app id that is used to identify who is making the payments,
+* `USERNAME`:  Used for authentication
+* `PASSWORD`:  User to verify authentication
 
-you can also use the Payhere to globally set the different variables.
+you can also use the `Payhere` to globally set the different variables.
 
 
 
 ```php
-Payhere::setBaseUrl('base');
+    Payhere::setBaseUrl('base');
 
-Payhere::setTargetEnvironment("targetenv");
+    Payhere::setTargetEnvironment("targetenv");
 
-Payhere::setCurrency("UGX");
+    Payhere::setUsername("username");
 
-Payhere::setCollectionApiSecret("collection_api_secret");
+    Payhere::setPassword("password");
 
-Payhere::setCollectionPrimaryKey("collection_primary_key");
-
-Payhere::setCollectionUserId("collection_user_id");
+    Payhere::setAppId("your_app_id");
 ```
 
 
 
-## Collections
+## Inpayments
+Used to create an instance of inpayment
 
-The collections client can be created with the following paramaters. Note that the `COLLECTION_USER_ID` and `COLLECTION_API_SECRET` for production are provided on the MTN OVA dashboard;
 
-* `COLLECTION_PRIMARY_KEY`: Primary Key for the `Collection` product on the developer portal.
-* `COLLECTION_USER_ID`: For sandbox, use the one generated with the `mtnmomo` command.
-* `COLLECTION_API_SECRET`: For sandbox, use the one generated with the `mtnmomo` command.
-
-You can create a collection client with the following:
+You can create an inpayment client with the following:
 
 ```php
+    use Payhere;
 
-
-
-
-$client = Collection();
+    $inpayments = new Inpayments();
 ```
 
 ### Methods
 
-1. `requestToPay`: This operation is used to request a payment from a consumer (Payer). The payer will be asked to authorize the payment. The transaction is executed once the payer has authorized the payment. The transaction will be in status PENDING until it is authorized or declined by the payer or it is timed out by the system. Status of the transaction can be validated by using `getTransactionStatus`.
+1. `request_to_pay`: This operation is used to request a payment from a Payer. The payer will be asked to authorize the payment. The transaction is executed once the payer has authorized the payment. The transaction will be in status PENDING until it is authorized or declined by the payer or it is timed out by the system. The status of the transaction can be validated by using `get_transaction_status`. 
 
-2. `getTransaction`: Retrieve transaction information using the `transactionId` returned by `requestToPay`. You can invoke it at intervals until the transaction fails or succeeds. If the transaction has failed, it will throw an appropriate error. 
-
-3. `getBalance`: Get the balance of the account.
-
-4. `isPayerActive`: check if an account holder is registered and active in the system.
+2. `get_transaction_status`: Retrieve transaction information using the `transaction_reference` returned by `request_to_pay`. You can invoke it at intervals until the transaction fails or succeeds. If the transaction has failed, it will throw an appropriate error. 
 
 ### Sample Code
 
 ```php
+    $params = [
+                'mobile' => "256782181656",
+                'processing_number' => "ref",
+                'payer_message' => "12",
+                'narration' => "what is being paid for",
+                'amount' => "500"];
 
+    $t = $inpayments->requestToPay($params);
 ```
 
+## Outpayments
+Used to create an instance of outpayment
+
+You can create an outpayment client with the following:
+
+```php
+    use Payhere;
+
+    $outpayments = new Outpayments();
+```
+
+### Methods
+1. `transfer`: Used to transfer an amount from the payers's account to a owners account. The status of the transaction can be validated by using the `get_transaction_status` method.
+
+2. `get_transaction_status`: Retrieve transaction information using the `transaction_reference` returned by `transfer`. You can invoke it at intervals until the transaction fails or succeeds. If the transaction has failed, it will throw an appropriate error. 
+
+## Sample Code
+
+```php
+
+    $params = [
+        'mobile' => "256782181656",
+        'processing_number' => "ref",
+        'payer_message' => "12",
+        'narration' => "what is being paid for",
+        'amount' => "500"];
+
+    $t = $outpayments->transfer($params);
+
+```
 
 ## Custom Request Timeouts
 
@@ -144,7 +167,7 @@ echo $curl->getConnectTimeout(); // 5
 // tell Payhere to use the tweaked client
 \Payhere\ApiRequest::setHttpClient($curl);
 
-// use the Momo API client as you normally would
+// use the Payhere API client as you normally would
 ```
 
 ## Custom cURL Options (e.g. proxies)

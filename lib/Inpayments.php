@@ -52,7 +52,7 @@ class Inpayments extends Payments
             "amount" => $params['amount']];
 
 
-        $response = self::request('post', $url, $data, $this->getHeader());
+        $inpayment = self::request('post', $url, $data, $this->getHeader());
 
 
         return $inpayment;

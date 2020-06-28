@@ -57,9 +57,9 @@ class Payhere
             return $burl;
         } else {
             if (self::getTargetEnvironment() == "sandbox") {
-                return "http://sandbox.payhere.africa/api/".self::VERSION;
+                return "https://api-sandbox.payhere.africa/api/".self::VERSION;
             }
-            return "http://api.payhere.africa/api/".self::VERSION;
+            return "https://api.payhere.africa/api/".self::VERSION;
         }
     }
 

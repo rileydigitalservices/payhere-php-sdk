@@ -223,7 +223,7 @@ composer install
 Install dependencies as mentioned above (which will resolve [PHPUnit](http://packagist.org/packages/phpunit/phpunit)), then you can run the test suite:
 
 ```bash
-./vendor/bin/phpunit
+./vendor/bin/phpunit -c phpunit.no_autoload.xml
 ```
 
 Or to run an individual test file:
